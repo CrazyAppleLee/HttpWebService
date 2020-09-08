@@ -5,6 +5,7 @@
 #include<memory>
 #include <vector>
 
+const int MAXFDS = 100000;
 class Epoll{
 public:
     Epoll();
@@ -20,8 +21,8 @@ public:
         return epollFd_;
     }
 private:
-    const int MAXFDS = 100000;
-    int epollFd_;
+    
+    int _epollFd;
     std::vector<epoll_event> events;
     ChannelPtr arrFd2ChanPtr[MAXFDS];
     //TimerManager timerManager;

@@ -5,8 +5,8 @@
 #include <vector>
 
 EventLoop::EventLoop()
-:   epollPtr(new Epoll()),
-    quit_(false),
+:   _epollPtr(new Epoll()),
+    _quit(false),
     //weakupFd(createEventfd())
     //weakupChannel(new Channel(this,weakupFd))
 {
@@ -21,7 +21,7 @@ EventLoop::~EventLoop()
 void EventLoop::doLoop()
 {
     std::vector<ChannelPtr> vRetChannelPtr;
-    while(!quit_)
+    while(!_quit)
     {
         vRetChannelPtr = epollPtr->poll();
         std::vector<ChannelPtr>::iterator it;
@@ -29,6 +29,10 @@ void EventLoop::doLoop()
             (*it)->handleEvent();
         }
     }
+}
+void EventLoop::addToEpoll(ChannelPtr chnlPtr, int TimeOut = 0)
+{
+    
 }
 
 

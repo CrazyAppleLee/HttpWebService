@@ -25,9 +25,9 @@ class EventLoop{
     //void doPendingfunction();
 
     //vector<std::function<void()>> vPendingFunctions;
-    EpollPtr    epollPtr;
+    EpollPtr    _epollPtr;
     //ChannelPtr  weakupChannel;
     //int     weakupFd;
-    bool    quit_;
+    bool    _quit;
 };
 #endif

@@ -12,5 +12,9 @@ int createEventfd()
     }
     return evtfd;
 }
+int createEpollFd(){
+    int EpollFd = epoll_create1(EPOLL_CLOEXEC);
+    return EpollFd;
+}
 
 #endif
