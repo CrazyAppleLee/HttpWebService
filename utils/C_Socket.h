@@ -40,14 +40,20 @@ namespace WebServer{
         void setProtocol(int p){ _protocol = p; }
         void setListenSize(int lss){ _listenSize = lss; }
         
-        string getLocalIp();
+        string getIp();
 
         bool createSocket();
         bool bindSocket();
         bool listenSocket();
         bool acceptConn(C_Socket &newtSocke);
+        void closeSocket();
+        void shutDownWR();
 
-        bool readSocket(string &msg);
+        void setSocketNodelay();
+        void setSoReuseAddr();
+
+        ssize_t readSocket(string &msg);
+        bool readnSocket(string &msg);
         bool writeSocket(string &msg);
 
     };

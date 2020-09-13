@@ -5,6 +5,7 @@
 #include <unistd.h>
 #include <stdio.h>
 #include <arpa/inet.h>
+#include <netinet/tcp.h>
 
 using namespace WebServer;
 using namespace std;
@@ -40,14 +41,17 @@ C_Socket::C_Socket(int fd)
     // _ip = string(inet_ntoa(addr.sin_addr));
 }
 
-string C_Socket::getLocalIp()
-{
-    struct sockaddr_in addr;
-    cout << INADDR_ANY <<endl;
-    addr.sin_addr.s_addr = htonl(INADDR_ANY);
+// string C_Socket::getLocalIp()
+// {
+//     struct sockaddr_in addr;
+//     cout << INADDR_ANY <<endl;
+//     addr.sin_addr.s_addr = htonl(INADDR_ANY);
     
-    string ip = string(inet_ntoa(addr.sin_addr));
-    return ip;
+//     string ip = string(inet_ntoa(addr.sin_addr));
+//     return ip;
+// }
+string C_Socket::getIp(){
+    return _ip;
 }
 
 bool C_Socket::createSocket()
@@ -63,10 +67,12 @@ bool C_Socket::bindSocket()
     struct sockaddr_in addr;
     memset(&addr, 0, sizeof(addr));
     addr.sin_family = _family;
-    if(_ip == "") _ip = getLocalIp();
-    //addr.sin_addr.s_addr = inet_addr(_ip.c_str());
-    addr.sin_addr.s_addr = htonl(INADDR_ANY);
-    cout << addr.sin_addr.s_addr << endl;
+    //if(_ip == "") _ip = getLocalIp();
+    if(_ip != "")
+        addr.sin_addr.s_addr = inet_addr(_ip.c_str());
+    else 
+        addr.sin_addr.s_addr = htonl(INADDR_ANY);
+    //cout << addr.sin_addr.s_addr << endl;
     addr.sin_port = htons(_port);
     
     int ret = bind(_fd, (struct sockaddr*)&addr, sizeof(addr));
@@ -79,6 +85,18 @@ bool C_Socket::listenSocket()
     int ret = listen(_fd, _listenSize);
     if(ret == -1) return false;
     else return true; 
+}
+void C_Socket::setSocketNodelay()
+{
+    int enable = 1;
+    if(_fd == -1) return ;
+    setsockopt(_fd, IPPROTO_TCP, TCP_NODELAY, (void*)&enable, sizeof(enable));
+}
+void C_Socket::setSoReuseAddr()
+{
+    int enable = 1;
+    if(_fd == -1) return ;
+    setsockopt(_fd, SOL_SOCKET, SO_REUSEADDR, (void*)&enable, sizeof(enable));
 }
 
 bool C_Socket::acceptConn(C_Socket &newtSocket)
@@ -93,11 +111,34 @@ bool C_Socket::acceptConn(C_Socket &newtSocket)
     string ip(inet_ntoa(addr.sin_addr));
     newtSocket.setIp(ip);
     newtSocket.setPort(ntohs(addr.sin_port));
+    //newtSocket.setSocketNodelay();
     return true;
 
 }
 
-bool C_Socket::readSocket(string &msg)
+void C_Socket::closeSocket()
+{
+    close(_fd);
+}
+
+void C_Socket::shutDownWR()
+{
+    shutdown(_fd, SHUT_WR);
+}
+
+ssize_t C_Socket::readSocket(string &msg)
+{
+    char buff[BUFFSIZE];
+    ssize_t readNum = 0;
+    readNum = read(_fd, buff, BUFFSIZE);
+    if(readNum > 0){
+        msg.append(buff, readNum);
+    }
+    return readNum;
+}
+    
+
+bool C_Socket::readnSocket(string &msg)
 {
     ssize_t readNum = 0;
     char buff[BUFFSIZE];
@@ -137,6 +178,7 @@ bool C_Socket::writeSocket(string &msg)
 {
     //string::iterator it=msg
     if(msg.empty()) return true;
+    cout << msg << endl;
     ssize_t writeNum = write(_fd, msg.c_str(), msg.size());
     if(writeNum == -1) return false;
     return true;

@@ -38,7 +38,8 @@ namespace WebServer{
         C_MutexLock &_mutexLock;
 
     public:
-        explicit C_MutexLockGuard(C_MutexLock &mlock): _mutexLock(mlock)
+        //explicit C_MutexLockGuard(C_MutexLock &mlock): _mutexLock(mlock)
+        C_MutexLockGuard(C_MutexLock &mlock): _mutexLock(mlock)
         {
             _mutexLock.lockThread();
         }

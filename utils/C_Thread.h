@@ -12,12 +12,13 @@ namespace WebServer{
         bool   _bJoin; 
         pthread_t   _pId;
         Function    _runFun;
-        C_Thread(){};
+        
         //void *run(void *);
 
     public:
-
+        C_Thread(){};
         C_Thread(Function runFun);
+        void setRunFun(Function runFun) { _runFun = runFun; }
         bool start();
         bool join();
         void run();
