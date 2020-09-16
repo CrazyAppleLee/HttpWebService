@@ -19,15 +19,9 @@ class EventLoop{
     void modInEpoll(ChannelPtr chnlPtr, int TimeOut = 0);
     private:
 
-    //void weakup();
-    //void handRead();
-    //void handConn();
-    //void doPendingfunction();
 
-    //vector<std::function<void()>> vPendingFunctions;
     EpollPtr    _epollPtr;
-    //ChannelPtr  weakupChannel;
-    //int     weakupFd;
+
     bool    _quit;
 };
 #endif

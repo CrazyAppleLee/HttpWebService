@@ -1,5 +1,5 @@
 #include "HandleThread.h"
-#include "Channel.h"
+#include "utils/Channel.h"
 #include <iostream>
 
 using namespace WebServer;
@@ -10,7 +10,7 @@ void HandleThread::start(){
     _thread.start();
 }
 void HandleThread::run(){
-    Channel chan;
+    ChannelPtr chan;
     cout << "HandleThread run "<<endl;
     while(true)
     {
@@ -18,14 +18,15 @@ void HandleThread::run(){
             C_MutexLockGuard lock(_mLock);
             if(_quit) break;
         }
-        cout << "_chansQueuePtr pop "<<endl;
+        //cout << "_chansQueuePtr pop "<<endl;
+        //WebServer::C_SQueue<std::shared_ptr<WebServer::Channel> >::push(WebServer::Channel&)
         while(_chansQueuePtr->pop(chan))
         {
             {
                 C_MutexLockGuard lock(_mLock);
                 if(_quit) break;
             }
-            chan.handle();
+            chan->handle();
         }
     }
 }

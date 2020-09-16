@@ -3,22 +3,21 @@
 
 #include "utils/C_Thread.h"
 #include "utils/C_MutexLock.h"
+#include "utils/Channel.h"
 #include "utils/C_SQueue.h"
-#include "Channel.h"
+#include "utils/Notify.h"
 #include <memory>
 #include <functional>
 
 namespace WebServer{
-
-    typedef std::shared_ptr<C_SQueue<Channel>> ChannelsQueuePtr;
-
+    
     class HandleThread{
     private:
         bool _quit = false;
         C_Thread _thread;
         C_MutexLock _mLock;
         ChannelsQueuePtr _chansQueuePtr;
-
+        Notify _notify;
 
     public:
         HandleThread(){}
@@ -27,6 +26,7 @@ namespace WebServer{
         void start();
         void run();
         void quit();
+        void wakeup(){ _notify.notify(); }
 
     };
 }

@@ -7,7 +7,7 @@ MAINCPP = test.cpp
 CC = g++
 CFLAGS  = -std=c++11 -g -Wall -D_PTHREADS -lpthread -O3 -D_REENTRANT
 
-$(target): $(obj) 
+$(target): $(obj) $(MAINCPP)
 	$(CC) $(obj) $(MAINCPP) -o $(target) $(CFLAGS)
 %.o: %.cpp 
 	$(CC) -c $< -o $@ $(CFLAGS)

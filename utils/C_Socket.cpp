@@ -17,7 +17,8 @@ C_Socket::C_Socket()
     _domain(PF_INET),
     _sockType(SOCK_STREAM),
     _listenSize(10),
-    _protocol(0)   
+    _protocol(0),
+    _isClose(false)
 {
     // printf("init");
     // struct sockaddr_in addr;
@@ -33,8 +34,9 @@ C_Socket::C_Socket(int fd)
     _port(-1),
     _domain(PF_INET),
     _sockType(SOCK_STREAM),
-    _listenSize(10),
-    _protocol(0)   
+    _listenSize(2048),
+    _protocol(0),
+    _isClose(false)   
 {
     // struct sockaddr_in addr;
     // addr.sin_addr.s_addr = htonl(INADDR_ANY);
@@ -118,6 +120,7 @@ bool C_Socket::acceptConn(C_Socket &newtSocket)
 
 void C_Socket::closeSocket()
 {
+    _isClose = true;
     close(_fd);
 }
 
@@ -138,10 +141,11 @@ ssize_t C_Socket::readSocket(string &msg)
 }
     
 
-bool C_Socket::readnSocket(string &msg)
+bool C_Socket::readnSocket(string &msg, bool &zero)
 {
     ssize_t readNum = 0;
     char buff[BUFFSIZE];
+    zero = false;
     while(true)
     {
         //cout << " read " << endl;
@@ -166,8 +170,9 @@ bool C_Socket::readnSocket(string &msg)
             //cout<< "read4" <<endl;
             msg.append(buff, readNum);
         }
-        else 
+        else if(readNum == 0) 
         {
+            zero = true;
             return true;
         }
     }
@@ -182,4 +187,38 @@ bool C_Socket::writeSocket(string &msg)
     ssize_t writeNum = write(_fd, msg.c_str(), msg.size());
     if(writeNum == -1) return false;
     return true;
+}
+
+ssize_t C_Socket::writenSocket(string &sbuff)
+{
+    size_t nleft = sbuff.size();
+    ssize_t nwritten = 0;
+    ssize_t writeSum = 0;
+    const char *ptr = sbuff.c_str();
+    while (nleft > 0)
+    {
+        if ((nwritten = write(_fd, ptr, nleft)) <= 0)
+        {
+            if (nwritten < 0)
+            {
+                if (errno == EINTR)
+                {
+                    nwritten = 0;
+                    continue;
+                }
+                else if (errno == EAGAIN)
+                    break;
+                else
+                    return -1;
+            }
+        }
+        writeSum += nwritten;
+        nleft -= nwritten;
+        ptr += nwritten;
+    }
+    if (writeSum == static_cast<int>(sbuff.size()))
+        sbuff.clear();
+    else
+        sbuff = sbuff.substr(writeSum);
+    return writeSum;
 }

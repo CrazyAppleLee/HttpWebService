@@ -16,7 +16,7 @@ namespace WebServer{
         //void *run(void *);
 
     public:
-        C_Thread(){};
+        C_Thread();
         C_Thread(Function runFun);
         void setRunFun(Function runFun) { _runFun = runFun; }
         bool start();

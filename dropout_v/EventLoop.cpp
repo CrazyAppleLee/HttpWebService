@@ -6,9 +6,7 @@
 
 EventLoop::EventLoop()
 :   _epollPtr(new Epoll()),
-    _quit(false),
-    //weakupFd(createEventfd())
-    //weakupChannel(new Channel(this,weakupFd))
+    _quit(false)
 {
 
 }
