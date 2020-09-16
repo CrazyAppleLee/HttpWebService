@@ -20,6 +20,14 @@ void C_Epoll::setWakeupChannelPtr(std::shared_ptr<Channel> newChanPtr)
     _wakeupChan = newChanPtr;
     addChannelPtr(_wakeupChan, _wakeupChan->getSetEvents());
 }
+void C_Epoll::setWakeupChannelPtr(NotifyPtr notifyPtr)
+{
+    _wakeupChan = make_shared<Channel>();
+    _wakeupChan->setFd(notifyPtr->getFd());
+    _wakeupChan->setReadhanedler(bind(&Notify::wait, notifyPtr));
+    _wakeupChan->setSetEvents(EPOLLIN|EPOLLET);
+    addChannelPtr(_wakeupChan, _wakeupChan->getSetEvents());
+}
 
 void C_Epoll::addChannelPtr(ChannelPtr addChanPtr, __int32_t setEvents)
 {

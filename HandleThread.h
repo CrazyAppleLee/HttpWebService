@@ -17,17 +17,23 @@ namespace WebServer{
         C_Thread _thread;
         C_MutexLock _mLock;
         ChannelsQueuePtr _chansQueuePtr;
-        Notify _notify;
+        NotifyPtr _notifyPtr;
+        
+        void run();
 
     public:
-        HandleThread(){}
+        HandleThread():_notifyPtr(make_shared<Notify>())
+        {
+
+        }
         HandleThread(ChannelsQueuePtr chansQueuePtr){_chansQueuePtr = chansQueuePtr;}
         void setQueuePtr(ChannelsQueuePtr chansQueuePtr){_chansQueuePtr = chansQueuePtr;}
         void start();
-        void run();
+        
         void quit();
-        void wakeup(){ _notify.notify(); }
+        void wakeup(){ _notifyPtr->notify(); }
 
     };
+    typedef std::shared_ptr<HandleThread> HandleThreadPtr;
 }
 #endif

@@ -17,6 +17,10 @@ namespace WebServer{
             _isNotified(false)
         {
         }
+        int getFd()
+        {
+            return _wakeUpFd;
+        }
         void wait(){
             uint64_t rInt = 0;
             ssize_t num = read(_wakeUpFd, &rInt, sizeof(rInt));

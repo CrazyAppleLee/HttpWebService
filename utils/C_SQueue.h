@@ -23,6 +23,11 @@ namespace WebServer{
         {
 
         }
+
+        void setNotifyFun(std::function<void()> cb) //设置唤醒处理本队列的线程 的方法
+        {
+            _notifyFun = cb;
+        }
         bool pop(T &e)
         {
             {

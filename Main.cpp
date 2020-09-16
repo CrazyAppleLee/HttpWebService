@@ -1,12 +1,10 @@
-#include "utils/C_Socket.h"
-#include "utils/C_MutexLock.h"
-#include "utils/C_SQueue.h"
-#include "utils/Channel.h"
+#include "HttpServer.h"
 #include <stdio.h>
 
 using namespace WebServer;
 
 int main(){
-
+    HttpServer *server = new HttpServer(10088);
+    server->start();
     return 0;
 }

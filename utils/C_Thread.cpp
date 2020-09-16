@@ -9,7 +9,7 @@ using namespace WebServer;
 
 static void *runThread(void* args)
 {
-    cout << "runThread start ...." << endl;
+    //cout << "runThread start ...." << endl;
     C_Thread *cTread = (C_Thread*)args;
     cTread->run();
     return NULL;
@@ -33,10 +33,10 @@ C_Thread::C_Thread(Function runFun)
 
 bool C_Thread::start()
 {
-    cout << "Thread start ...." << _bStarted << endl;
+    //cout << "Thread start ...." << _bStarted << endl;
     if(!_bStarted)
     {
-        cout << "_bStarted false ...." << endl;
+        //cout << "_bStarted false ...." << endl;
         _bStarted = true;
         if(pthread_create(&_pId, NULL, &runThread, this) != 0)
         {

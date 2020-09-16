@@ -17,19 +17,27 @@ namespace WebServer{
 
         C_Socket _acceptSocket; // 服务监听
         ChannelPtr _acceptChannel; // 监听 事务处理
+
+        HandleThread *_handleEventThreadPtr;
         ChannelsQueuePtr _handleQueue; //事务处理队列
 
         C_EpollPtr _cEpollPtr; //epoll
-        Notify _notify; //用于唤醒epoll
+        HandleEpollQueuePtr _handleEpoll;
+        NotifyPtr _notifyPtr; //用于唤醒epoll
+
+
+        HttpServer();
 
     public:
 
-        HttpServer();
+        HttpServer(int port);
+
         void handleNewConn();
         void handleConn();
         void start();
         void runInServer(HandleEpoll cb); // 放在epoll触发之后 运行的事务
-        void wakeup(){ _notify.notify(); }// 唤醒epoll
+        void wakeup(){ _notifyPtr->notify(); }// 唤醒epoll
+        void handleEpoll();
 
     };
 

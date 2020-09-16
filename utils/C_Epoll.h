@@ -3,6 +3,7 @@
 
 #include "C_SQueue.h"
 #include "Channel.h"
+#include "Notify.h"
 #include <sys/epoll.h>
 #include <vector>
 #include <functional>
@@ -29,6 +30,7 @@ namespace WebServer{
     public:
         C_Epoll();
         void setWakeupChannelPtr(std::shared_ptr<Channel> newChanPtr);
+        void setWakeupChannelPtr(NotifyPtr notifyPtr);
         void addChannelPtr(std::shared_ptr<Channel> newChanPtr, __int32_t setEvents); //添加监听事件
         void delChannelPtr(std::shared_ptr<Channel> delChanPtr); //删除监听事件
         void modChannelPtr(std::shared_ptr<Channel> modChanPtr, __int32_t setEvents); //修改状态

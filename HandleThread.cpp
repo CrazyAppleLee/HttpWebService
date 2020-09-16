@@ -11,7 +11,7 @@ void HandleThread::start(){
 }
 void HandleThread::run(){
     ChannelPtr chan;
-    cout << "HandleThread run "<<endl;
+    //cout << "HandleThread run "<<endl;
     while(true)
     {
         {
@@ -28,11 +28,12 @@ void HandleThread::run(){
             }
             chan->handle();
         }
+        _notifyPtr->wait();
     }
 }
 void HandleThread::quit(){
-    {
-        C_MutexLockGuard lock(_mLock);
-        _quit = true;
-    }
+    
+    C_MutexLockGuard lock(_mLock);
+    _quit = true;
+    
 }
