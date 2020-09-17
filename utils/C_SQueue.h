@@ -97,7 +97,7 @@ namespace WebServer{
                 tmpQ = _queue;
                 _queue = newQueue;
             }
-            //newQueue = tmpQ;
+            newQueue = tmpQ;
             
         }
 

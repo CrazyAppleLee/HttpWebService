@@ -32,6 +32,7 @@ void C_Epoll::setWakeupChannelPtr(NotifyPtr notifyPtr)
 void C_Epoll::addChannelPtr(ChannelPtr addChanPtr, __int32_t setEvents)
 {
     int socketFd = addChanPtr->getFd();
+
     //cout << "start addChannelPtr socketFd = " << socketFd << endl;
     struct epoll_event event;
     event.data.fd = socketFd;
@@ -48,6 +49,7 @@ void C_Epoll::addChannelPtr(ChannelPtr addChanPtr, __int32_t setEvents)
 void C_Epoll::delChannelPtr(ChannelPtr delChanPtr)
 {
     int socketFd = delChanPtr->getFd();
+    cout << "del fd " << socketFd <<endl;
     if(epoll_ctl(_epollFd, EPOLL_CTL_DEL, socketFd, NULL) != 0){
         return ;
     }
