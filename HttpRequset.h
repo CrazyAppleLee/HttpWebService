@@ -18,10 +18,11 @@ namespace WebServer{
         C_Socket _cSocket;
         HttpServer *_server;
         C_EpollPtr _cEpollPtr;
-        std::string _reqMsg;
-        std::string _rspMsg;
+        //std::string _reqMsg;
+        //std::string _rspMsg;
         std::weak_ptr<Channel> _chanPtr; //保存外层Channel
-        
+        C_SQueue<HttpRspqMsg> _msgRsqQueue;
+
     public:
 
         HttpRequset();
@@ -40,7 +41,6 @@ namespace WebServer{
         int getSocketFd(){ return _cSocket.getSocket(); } //套接字
         void doTest();//测试
 
-        HttpReqMsg parseHttpReq(std::string msg);
 
 
     };

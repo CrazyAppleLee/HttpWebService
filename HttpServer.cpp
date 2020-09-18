@@ -104,7 +104,6 @@ void HttpServer::handleEpoll(){
     cout << "handleEpoll" << HQueue->size() <<endl;
     while (!HQueue->empty())
     {   
-        
         HandleEpoll cb = HQueue->front();
         HQueue->pop();
         cb();
