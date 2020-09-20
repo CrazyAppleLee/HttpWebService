@@ -93,6 +93,7 @@ void HttpRequset::doRequset(string reqMsg)
 
 
     HttpRspqMsg httpRsp;
+    if(httpReq.url != "/upload"){
     string pageContent;
     if(readWebPage(httpReq.url, pageContent)){
         httpRsp.content = pageContent;
@@ -102,13 +103,15 @@ void HttpRequset::doRequset(string reqMsg)
         httpRsp.description = "not found";
         httpRsp.content = "<html><h1>not found</h1></html>";
     }
+    }
     httpRsp.headers["Content-type"] = "text/html";
     string rspMsg = httpRsp.toStr();
     cout << rspMsg << endl;
     _msgRsqQueue.push(httpRsp);
-    ChannelPtr tmpChan = _chanPtr.lock();
-    tmpChan->setSetEvents(tmpChan->getSetEvents()|EPOLLOUT);
-    _server->runInServer(bind(&C_Epoll::modChannelPtr, _cEpollPtr, tmpChan, tmpChan->getSetEvents()));
+    writeHandler();
+    //ChannelPtr tmpChan = _chanPtr.lock();
+    //tmpChan->setSetEvents(tmpChan->getSetEvents()|EPOLLOUT);
+    //_server->runInServer(bind(&C_Epoll::modChannelPtr, _cEpollPtr, tmpChan, tmpChan->getSetEvents()));
     //_cSocket.writenSocket(rspMsg);
 }
 
