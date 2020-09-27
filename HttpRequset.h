@@ -5,6 +5,7 @@
 #include "./utils/C_SQueue.h"
 #include "./utils/Channel.h"
 #include "./utils/Utils.h"
+#include "./HttpMsg.h"
 #include "HttpServer.h"
 #include <string>
 #include <memory>

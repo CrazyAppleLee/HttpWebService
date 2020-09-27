@@ -1,6 +1,7 @@
 #include "HttpRequset.h"
 #include "./utils/Channel.h"
 #include "./utils/Utils.h"
+#include "./HttpMsg.h"
 
 #include <fcntl.h>
 #include <iostream>
@@ -77,38 +78,38 @@ void HttpRequset::readHandler()
 
 void HttpRequset::doRequset(string reqMsg)
 {
-    HttpReqMsg httpReq;
-    if(!httpReq.parseHttpReq(reqMsg)) {
-        errorHandler();
-    }
-    cout << reqMsg <<endl;
-    cout << "HttpReqMsg parseHttpReq" << endl ;
-    cout << httpReq.method << " " << httpReq.url << " " << httpReq.version << endl;
-    map<string, string>::iterator it = httpReq.headers.begin();
-    for(; it != httpReq.headers.end(); it++)
-    {
-        cout << it->first << " " << it->second <<endl;
-    }
-    cout << httpReq.content << endl;
+    // HttpReqMsg httpReq;
+    // if(!httpReq.parseHttpReq(reqMsg)) {
+    //     errorHandler();
+    // }
+    // cout << reqMsg <<endl;
+    // cout << "HttpReqMsg parseHttpReq" << endl ;
+    // cout << httpReq.method << " " << httpReq.url << " " << httpReq.version << endl;
+    // map<string, string>::iterator it = httpReq.headers.begin();
+    // for(; it != httpReq.headers.end(); it++)
+    // {
+    //     cout << it->first << " " << it->second <<endl;
+    // }
+    // cout << httpReq.content << endl;
 
 
-    HttpRspqMsg httpRsp;
-    if(httpReq.url != "/upload"){
-    string pageContent;
-    if(readWebPage(httpReq.url, pageContent)){
-        httpRsp.content = pageContent;
-    }
-    else {
-        httpRsp.status = "404";
-        httpRsp.description = "not found";
-        httpRsp.content = "<html><h1>not found</h1></html>";
-    }
-    }
-    httpRsp.headers["Content-type"] = "text/html";
-    string rspMsg = httpRsp.toStr();
-    cout << rspMsg << endl;
-    _msgRsqQueue.push(httpRsp);
-    writeHandler();
+    // HttpRspqMsg httpRsp;
+    // if(httpReq.url != "/upload"){
+    // string pageContent;
+    // if(readWebPage(httpReq.url, pageContent)){
+    //     httpRsp.content = pageContent;
+    // }
+    // else {
+    //     httpRsp.status = "404";
+    //     httpRsp.description = "not found";
+    //     httpRsp.content = "<html><h1>not found</h1></html>";
+    // }
+    // }
+    // httpRsp.headers["Content-type"] = "text/html";
+    // string rspMsg = httpRsp.toStr();
+    // cout << rspMsg << endl;
+    // _msgRsqQueue.push(httpRsp);
+    // writeHandler();
     //ChannelPtr tmpChan = _chanPtr.lock();
     //tmpChan->setSetEvents(tmpChan->getSetEvents()|EPOLLOUT);
     //_server->runInServer(bind(&C_Epoll::modChannelPtr, _cEpollPtr, tmpChan, tmpChan->getSetEvents()));
