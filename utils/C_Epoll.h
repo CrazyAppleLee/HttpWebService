@@ -12,6 +12,7 @@
 
 namespace WebServer{
 
+    template <typename T> class C_SQueue;
     class Channel;
     // typedef std::shared_ptr<Channel> ChannelPtr;
     // typedef C_SQueue<ChannelPtr> ChannelsQueue;
@@ -36,7 +37,6 @@ namespace WebServer{
         void modChannelPtr(std::shared_ptr<Channel> modChanPtr, __int32_t setEvents); //修改状态
         std::vector<std::shared_ptr<Channel>> poll();
     };
-
     typedef std::shared_ptr<C_Epoll> C_EpollPtr;
     typedef std::function<void()> HandleEpoll; //处理epoll事务的函数 类型
     typedef std::shared_ptr<C_SQueue<HandleEpoll>> HandleEpollQueuePtr;//处理epoll事务的函数队列  类型

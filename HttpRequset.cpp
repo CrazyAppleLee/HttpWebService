@@ -16,7 +16,7 @@ using namespace std;
 
 HttpRequset::HttpRequset()
 :   _cSocket(C_Socket(-1)),
-    _server(NULL),
+    _loop(NULL),
     _cEpollPtr(NULL)
 {
 
@@ -24,7 +24,7 @@ HttpRequset::HttpRequset()
 
 HttpRequset::HttpRequset(C_Socket cSocket)
 :   _cSocket(cSocket),
-    _server(NULL),
+    _loop(NULL),
     _cEpollPtr(NULL)
 {
 
@@ -37,7 +37,9 @@ void HttpRequset::doTest()
 
 void HttpRequset::connHander()
 {
-
+    if(_bClose){
+        _loop->runInLoop(bind(&EpollLoop::delEvent, _loop, _chanPtr.lock()));
+    }
 }
 void HttpRequset::readHandler()
 {
@@ -48,32 +50,13 @@ void HttpRequset::readHandler()
     //setFdNonBlock(newSocket.getSocket());
     _cSocket.readnSocket(msg, zero);
     if(zero){
-        
-        _server->runInServer(bind(&C_Epoll::delChannelPtr, _cEpollPtr, _chanPtr.lock()));
-        _cSocket.closeSocket();
+        _bClose = true;
+        //_loop->runInLoop(bind(&EpollLoop::delEvent, _loop, _chanPtr.lock()));
+        //_cSocket.closeSocket();
         return ;
     }
+
     doRequset(msg);
-    // cout << " -------zero------ " << zero << " -----------------" << endl;
-    // cout << msg << endl;
-    // cout << "----------------Http Msg---------------- "<< endl;
-
-    // ostringstream rsp;
-    // static int count = 0;
-    // rsp << "HTTP/1.1 200 OK\r\n";
-    // //rsp +=          "Content-Type: text/plain\r\n";
-    // rsp << "\r\n";
-    // rsp << "<html>";
-    // rsp << "index page " << count;
-    // count ++;
-    // rsp << "</html>";
-    // string str(rsp.str());
-
-    // _cSocket.writenSocket(str);
-    // _server->runInServer(bind(&C_Epoll::delChannelPtr, _cEpollPtr, _chanPtr.lock()));
-    // _cSocket.closeSocket();
-
-    //_cEpollPtr->delChannelPtr(_chanPtr.lock());
 }
 
 void HttpRequset::doRequset(string reqMsg)
@@ -93,11 +76,12 @@ void HttpRequset::doRequset(string reqMsg)
     // cout << httpReq.content << endl;
 
 
-    // HttpRspqMsg httpRsp;
+    HttpRspqMsg httpRsp;
     // if(httpReq.url != "/upload"){
-    // string pageContent;
-    // if(readWebPage(httpReq.url, pageContent)){
-    //     httpRsp.content = pageContent;
+    string pageContent;
+    if(readWebPage("/", pageContent))
+    //{
+        httpRsp._content = pageContent;
     // }
     // else {
     //     httpRsp.status = "404";
@@ -106,14 +90,10 @@ void HttpRequset::doRequset(string reqMsg)
     // }
     // }
     // httpRsp.headers["Content-type"] = "text/html";
-    // string rspMsg = httpRsp.toStr();
-    // cout << rspMsg << endl;
-    // _msgRsqQueue.push(httpRsp);
-    // writeHandler();
-    //ChannelPtr tmpChan = _chanPtr.lock();
-    //tmpChan->setSetEvents(tmpChan->getSetEvents()|EPOLLOUT);
-    //_server->runInServer(bind(&C_Epoll::modChannelPtr, _cEpollPtr, tmpChan, tmpChan->getSetEvents()));
-    //_cSocket.writenSocket(rspMsg);
+    string rspMsg = httpRsp.toStr();
+    cout << rspMsg << endl;
+    _msgRsqQueue.push(httpRsp);
+    writeHandler();
 }
 
 
@@ -128,8 +108,8 @@ void HttpRequset::writeHandler()
         string rspMsg = rsp.toStr();
         _cSocket.writenSocket(rspMsg);
     }
-    // _server->runInServer(bind(&C_Epoll::delChannelPtr, _cEpollPtr, _chanPtr.lock()));
-    // _cSocket.closeSocket();
+    //_server->runInServer(bind(&C_Epoll::delChannelPtr, _cEpollPtr, _chanPtr.lock()));
+    //_cSocket.closeSocket();
 }
 void HttpRequset::errorHandler()
 {

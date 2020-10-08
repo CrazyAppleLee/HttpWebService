@@ -3,7 +3,7 @@
 
 #include "C_MutexLock.h"
 #include "Notify.h"
-#include <vector>
+#include "Channel.h"
 #include <queue>
 #include <memory>
 #include <functional>

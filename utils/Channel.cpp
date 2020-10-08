@@ -17,7 +17,7 @@ Channel::Channel()
     _setEvents(0),
     _retEvents(0),
     _fd(-1),
-    _doHandleEvent(true)
+    _bDoHandleEvent(true)
 {
 
 }
@@ -31,22 +31,23 @@ Channel::Channel(std::shared_ptr<HttpRequset> requset, CallBack handler)
     _setEvents(0),
     _retEvents(0),
     _fd(-1),
-    _doHandleEvent(true)
+    _bDoHandleEvent(true)
 {
 
 }  
 void Channel::handleEvent()
 {
     _setEvents = 0;
+    cout << "handleEvent" << endl;
     if ((_retEvents & EPOLLHUP) && !(_retEvents & EPOLLIN))
     {
-        cout << "(_retEvents & EPOLLHUP) && !(_retEvents & EPOLLIN)" <<endl;
+        //cout << "(_retEvents & EPOLLHUP) && !(_retEvents & EPOLLIN)" <<endl;
         _setEvents = 0;
         return;
     }
     if (_retEvents & EPOLLERR)
     {
-        cout << "EPOLLERR" <<endl;
+        //cout << "EPOLLERR" <<endl;
         if (_errorHandler) _errorHandler();
         _setEvents = 0;
         return;

@@ -40,7 +40,7 @@ void HttpServer::start()
 {
     cout << "server start " << endl;
     _acceptChannel->setFd(_acceptSocket.getSocket());
-    _acceptChannel->setReadhanedler(bind(&HttpServer::handleNewConn, this));
+    _acceptChannel->setReadHanedler(bind(&HttpServer::handleNewConn, this));
     _acceptChannel->setConnHandler(bind(&HttpServer::handleConn, this));
     _acceptChannel->setSetEvents(EPOLLIN|EPOLLET);
     _cEpollPtr->addChannelPtr(_acceptChannel, _acceptChannel->getSetEvents()); //监听新连接channel
@@ -85,8 +85,8 @@ void HttpServer::handleNewConn(){
     newReuset->setServer(this);
 
     newChan->setFd(newSocket.getSocket());
-    newChan->setReadhanedler(bind(&HttpRequset::readHandler,newReuset));
-    newChan->setWritehanedler(bind(&HttpRequset::writeHandler,newReuset));
+    newChan->setReadHanedler(bind(&HttpRequset::readHandler,newReuset));
+    newChan->setWriteHanedler(bind(&HttpRequset::writeHandler,newReuset));
     newChan->setConnHandler(bind(&HttpRequset::connHander,newReuset));
     newChan->setSetEvents(EPOLLIN|EPOLLET);
     runInServer(bind(&C_Epoll::addChannelPtr, _cEpollPtr, newChan,newChan->getSetEvents()));

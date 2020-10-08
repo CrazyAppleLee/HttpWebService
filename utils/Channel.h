@@ -8,6 +8,7 @@
 #include <memory>
 
 namespace WebServer{
+    template <typename T> class C_SQueue;
     class HttpRequset;
     class C_Epoll;
     class Channel{
@@ -24,7 +25,7 @@ namespace WebServer{
         __uint32_t _retEvents; //触发的事件
         //C_Socket _cSocket; 
         int _fd;
-        bool _doHandleEvent;
+        bool _bDoHandleEvent;
         
     public:
         Channel();
@@ -61,19 +62,21 @@ namespace WebServer{
         {
             if(_handler){
                 _handler();
-            }else if(_doHandleEvent){
+            }else if(_bDoHandleEvent){
                 handleEvent();
             }
         }
         void setFd(int fd) { _fd = fd; }
 
+        void setHolder(std::shared_ptr<HttpRequset> httpRequset){ _httpRequset = httpRequset;};
+
         void setHandler(CallBack cb){ _handler = cb; }
 
         void setErrorHandler(CallBack cb){ _errorHandler = cb; }
     
-        void setReadhanedler(CallBack cb){ _readHandler = cb; }
+        void setReadHanedler(CallBack cb){ _readHandler = cb; }
 
-        void setWritehanedler(CallBack cb){ _writeHandler = cb; }
+        void setWriteHanedler(CallBack cb){ _writeHandler = cb; }
 
         void setConnHandler(CallBack cb){ _connHandler = cb; }
 
@@ -81,7 +84,7 @@ namespace WebServer{
 
         void setSetEvents(__uint32_t ev){ _setEvents = ev; }
 
-        void setDoHandleEvent(bool t){ _doHandleEvent = t; }
+        void setDoHandleEvent(bool t){ _bDoHandleEvent = t; }
 
         __uint32_t getSetEvents(){ return _setEvents; } 
 

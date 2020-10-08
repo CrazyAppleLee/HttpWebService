@@ -5,8 +5,9 @@
 #include "./utils/C_SQueue.h"
 #include "./utils/Channel.h"
 #include "./utils/Utils.h"
+#include "EpollLoop.h"
 #include "./HttpMsg.h"
-#include "HttpServer.h"
+//#include "HttpServer.h"
 #include <string>
 #include <memory>
 #include <functional>
@@ -17,19 +18,20 @@ namespace WebServer{
     private:
 
         C_Socket _cSocket;
-        HttpServer *_server;
+        EpollLoop *_loop;
         C_EpollPtr _cEpollPtr;
         //std::string _reqMsg;
         //std::string _rspMsg;
         std::weak_ptr<Channel> _chanPtr; //保存外层Channel
         C_SQueue<HttpRspqMsg> _msgRsqQueue;
+        bool _bClose = false;
 
     public:
 
         HttpRequset();
         HttpRequset(C_Socket cSocket);
         void setCSocket(C_Socket cSocket){ _cSocket = cSocket;}
-        void setServer(HttpServer *server){ _server = server;}
+        void setLoop(EpollLoop *loop){ _loop = loop;}
         void setChannel(std::weak_ptr<Channel> chanPtr){_chanPtr = chanPtr;}
         void setCEpoll(C_EpollPtr cEpollPtr){ _cEpollPtr = cEpollPtr;}
 
