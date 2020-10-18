@@ -26,7 +26,7 @@ namespace WebServer{
         void setThreadNun(int num){ _tNum = num; }
         void start()
         {
-            cout << "loop thread pool start" << endl;
+            std::cout << "loop thread pool start" << std::endl;
             LoopThead mainThread(_mainLoop);
             _vLoop.push_back(_mainLoop);
             _vThead.push_back(mainThread);

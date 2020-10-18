@@ -1,7 +1,5 @@
 {
     "files.associations": {
-        "functional": "cpp",
-        "type_traits": "cpp",
         "algorithm": "cpp",
         "cmath": "cpp",
         "cstddef": "cpp",
@@ -12,6 +10,7 @@
         "cwchar": "cpp",
         "deque": "cpp",
         "exception": "cpp",
+        "functional": "cpp",
         "initializer_list": "cpp",
         "ios": "cpp",
         "iosfwd": "cpp",
@@ -19,15 +18,19 @@
         "istream": "cpp",
         "limits": "cpp",
         "list": "cpp",
+        "map": "cpp",
         "memory": "cpp",
         "new": "cpp",
         "ostream": "cpp",
         "queue": "cpp",
+        "set": "cpp",
+        "sstream": "cpp",
         "stdexcept": "cpp",
         "streambuf": "cpp",
         "string": "cpp",
         "system_error": "cpp",
         "tuple": "cpp",
+        "type_traits": "cpp",
         "typeinfo": "cpp",
         "unordered_map": "cpp",
         "utility": "cpp",
@@ -43,10 +46,7 @@
         "xstddef": "cpp",
         "xstring": "cpp",
         "xtr1common": "cpp",
-        "xutility": "cpp",
-        "sstream": "cpp",
-        "map": "cpp",
         "xtree": "cpp",
-        "set": "cpp"
+        "xutility": "cpp"
     }
 }

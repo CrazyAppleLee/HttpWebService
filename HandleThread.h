@@ -22,7 +22,7 @@ namespace WebServer{
         void run();
 
     public:
-        HandleThread():_notifyPtr(make_shared<Notify>())
+        HandleThread():_notifyPtr(std::make_shared<Notify>())
         {
 
         }

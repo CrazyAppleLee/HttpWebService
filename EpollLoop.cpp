@@ -22,12 +22,14 @@ EpollLoop::EpollLoop()
 void EpollLoop::runInLoop(HandleEpoll cb)
 {
     _qEpollHandlerPtr->push(cb);
+    wakeUp();
 }
 void EpollLoop::loop()
 {
     cout << "Epoll loop..." << endl;
     while(!_quit)
     {
+        cout << "poll..." << endl;
         vector<shared_ptr<Channel>> vChans = _cEpollPtr->poll();
         for(int i = 0; i < vChans.size(); i++){
             vChans[i]->handleEvent();
@@ -67,6 +69,7 @@ void EpollLoop::addEvent(ChannelPtr &chan)
 }
 void EpollLoop::modEvent(ChannelPtr &chan)
 {
+    //cout << "modEvent " << chan->getSetEvents() << endl;
     _cEpollPtr->modChannelPtr(chan, chan->getSetEvents());
 }
 

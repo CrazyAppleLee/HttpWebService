@@ -12,11 +12,15 @@
 #include "../EpollLoop.h" 
 #include "../LoopThread.h"
 #include "../LoopThreadPool.h"
+#include "../FileData.h"
+#include "../FileHandler.h"
+#include "../utils/C_Json.h"
 #include <iostream>
 #include <memory>
 #include <stdio.h>
 #include <sstream>
 #include <functional>
+#include <map>
 
 using namespace std;
 using namespace WebServer;
@@ -323,6 +327,74 @@ void testLoop(){
     ForLoop testserver(loop);
     loop->loop();                                                                  
 }
+void testGetFileList()
+{
+    cout << "testGetFileList" << endl;
+    FileReqMsgST fileMsg;
+    fileMsg.sPath = "../data/";
+    FileInfoListST vList ; 
+    int ret = FileHandler::getFileList(fileMsg.sPath, vList);
+    cout << "ret = " << ret << endl;
+    for(int i = 0; i < vList.size(); i++)
+    {
+        cout << vList[i].sFileName << " " << vList[i].iFileType << endl;;
+    }
+}
+void testJson()
+{
+    string sJson = "     {  \"name\"  :  \"lxt\"   ,   \"age\"   :  \"26\"  }   ";
+    map<string, string> mValue;
+    C_Json::str2map(sJson, mValue);
+    map<string, string>::iterator it= mValue.begin();
+    while(it != mValue.end())
+    {
+        cout << it->first << "|" << it->second << "|" << endl;
+        it ++;
+    }
+    FileInfoST stFileInfo;
+    stFileInfo.sFileName = "xuantingli";
+    stFileInfo.sPath = "/data/xuantingli";
+    stFileInfo.iFileType = TYPE_FILE;
+    stFileInfo.iSize = 1000;
+    cout << stFileInfo.toJsonStr() << endl;
+    FileInfoST stTestFileInfo;
+    string sTestJson = stFileInfo.toJsonStr();
+    mValue.clear();
+    C_Json::str2map(sTestJson, mValue);
+    map<string, string>::iterator itr= mValue.begin();
+    while(itr != mValue.end())
+    {
+        cout << itr->first << "|" << itr->second << "|" << endl;
+        itr ++;
+    }
+    cout << (stTestFileInfo.readFromJson(sTestJson)?"YES":"NO") << endl;
+    cout << stTestFileInfo.toJsonStr() << endl;
+
+    FileInfoListST stList;
+    stList.push_back(stTestFileInfo);
+    stList.push_back(stFileInfo);
+    string sListJson = stList.toJsonStr();
+    cout << stList.toJsonStr() << endl;
+    string sAddTR = C_Json::addTR(sListJson);
+    cout << sAddTR << endl;
+    cout <<  C_Json::delTR(sAddTR)<< endl;
+    vector<map<string, string>> vValueMap;
+    if(C_Json::str2vmap(sListJson, vValueMap)){
+        for(int i = 0; i < vValueMap.size(); i++)
+        {
+            itr = vValueMap[i].begin();
+            while(itr != vValueMap[i].end()){
+                cout << itr->first <<" = "<< itr->second <<endl;
+                itr ++;
+            }
+            cout << endl;
+        }
+    }
+    FileInfoListST stTestList;
+    stTestList.readFromJson(sListJson);
+    cout << stTestList.toJsonStr() << endl ;
+    
+}
 int main(){
     //testSocket();
     //testQueue();
@@ -330,6 +402,8 @@ int main(){
     //testHttpRequset();
     //testEpoll();
     //testNotify();
-    testLoop();
+    //testLoop();
+    //testGetFileList();
+    testJson();
     return 0;
 }

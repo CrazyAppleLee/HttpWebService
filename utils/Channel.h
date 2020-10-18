@@ -88,6 +88,8 @@ namespace WebServer{
 
         __uint32_t getSetEvents(){ return _setEvents; } 
 
+        __uint32_t *getSetEventsHolder(){ return &_setEvents;}
+
         __uint32_t getRetEvents(){ return _retEvents; }
 
         int getFd() { return _fd; }

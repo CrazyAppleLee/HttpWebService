@@ -20,7 +20,7 @@ namespace WebServer{
 
     class C_Epoll{
     private:
-        static const int MAXFDS = 10000;        //描述符的范围 
+        static const int MAXFDS = 65535;        //描述符的范围 
         static const int EVENTSIZE = 2048;
         static const int EPOLLWAIT_TIME = -1;
         int _epollFd;                           //epoll的描述符

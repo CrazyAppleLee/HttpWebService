@@ -5,6 +5,7 @@
 #include <stdio.h>
 
 using namespace WebServer;
+using namespace std;
 
 int main(){
     //HttpServer *server = new HttpServer(10088);

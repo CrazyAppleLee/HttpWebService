@@ -23,33 +23,64 @@ bool WebServer::setFdNonBlock(int fd)
         return false;
     return true;
 }
-string WebServer::trimleft(string target, string sep)
+string WebServer::trimleft(const string &target, string sep)
 {
-    set<char> sChar;
+    set<char> seChar;
     for(int i=0; i < sep.size(); i++){
-        sChar.insert(sep[i]);
+        seChar.insert(sep[i]);
     }
     int i = 0;
-    while(i < target.size() && sChar.find(target[i]) != sChar.end()){
+    while(i < target.size() && seChar.find(target[i]) != seChar.end()){
         i++;
     }
     return target.substr(i, target.size() - i);
 }
 
-vector<string> WebServer::split(string target, string token)
+string WebServer::trimright(const string &target, string sep)
+{
+    set<char> seChar;
+    for(int i=0; i < sep.size(); i++){
+        seChar.insert(sep[i]);
+    }
+    int i = target.size() - 1;
+    while(i >= 0 && seChar.find(target[i]) != seChar.end()){
+        i--;
+    }
+    return target.substr(0, i + 1);
+}   
+
+string WebServer::trimLeftandRight(const std::string &target, std::string leftSep, std::string rightSep)
+{
+    string sStr = trimleft(target, leftSep);
+    return trimright(sStr, rightSep);
+}
+
+vector<string> WebServer::split(const string &target, string token)
 {
     vector<string> vString;
     string::size_type pos = 0;
     string::size_type p = target.find(token,pos);
     while(p != string::npos){
-        vString.push_back(target.substr(pos, p - pos));
+        vString.emplace_back(target.substr(pos, p - pos));
+        pos = p + token.size();
+        p = target.find(token, pos);
+    }
+    vString.emplace_back(target.substr(pos, target.size() - pos));
+    return vString;
+}
+vector<string> WebServer::split1st(const string &target, string token)
+{
+        vector<string> vString;
+    string::size_type pos = 0;
+    string::size_type p = target.find(token,pos);
+    if(p != string::npos){
+        vString.emplace_back(target.substr(pos, p - pos));
         pos = p + token.size();
         p = target.find(token,pos);
     }
-    vString.push_back(target.substr(pos, target.size() - pos));
+    vString.emplace_back(target.substr(pos, target.size() - pos));
     return vString;
 }
-
 
 
 bool WebServer::readWebPage(string path, string &content){
@@ -70,4 +101,18 @@ bool WebServer::readWebPage(string path, string &content){
         content.append(buff, readNum);
     }
     return true;
+}
+
+bool WebServer::str2int(const std::string &str, int &num)
+{
+    try{
+        num = stoi(str);
+        //cout << "str2int " << num << " " << str << endl;
+        return true;
+    }
+    catch(exception e)
+    {
+        //cout << "str2int error " << str << endl;
+        return false;
+    }
 }

@@ -50,20 +50,21 @@ void MyServer::handleNewConn()
     _acSocket.acceptConn(newSocket);
     setFdNonBlock(newSocket.getSocket());
     ChannelPtr newChanPtr = make_shared<Channel>();
+    EpollLoop *loop = _loopPool->getLoop();
     newChanPtr->setFd(newSocket.getSocket());
-    shared_ptr<HttpRequset> newReqPtr = make_shared<HttpRequset>();
-    newReqPtr->setChannel(newChanPtr);
-    newReqPtr->setCSocket(newSocket);
+    shared_ptr<HttpRequset> newReqPtr = make_shared<HttpRequset>(newSocket,loop);
+    // newReqPtr->setLoop(loop);
+    // newReqPtr->setCSocket(newSocket);
     newChanPtr->setHolder(newReqPtr);
     newChanPtr->setReadHanedler(bind(&HttpRequset::readHandler, newReqPtr));
     newChanPtr->setWriteHanedler(bind(&HttpRequset::writeHandler, newReqPtr));
     newChanPtr->setConnHandler(bind(&HttpRequset::connHander, newReqPtr));
     newChanPtr->setSetEvents(EPOLLIN|EPOLLET);
-    EpollLoop *loop = _loopPool->getLoop();
-    newReqPtr->setLoop(loop);
+    newReqPtr->setChannel(newChanPtr);
     loop->runInLoop(bind(&EpollLoop::addEvent, loop, newChanPtr));
 }
 void MyServer::handleConn()
 {
-    _mainLoop->runInLoop(bind(&EpollLoop::modEvent, _mainLoop, _acChannelPtr));
+    _acChannelPtr->setSetEvents(EPOLLIN|EPOLLET);
+    _mainLoop->modEvent(_acChannelPtr);
 }

@@ -31,3 +31,8 @@
 *.out
 *.app
 .vscode/sftp.json
+.vscode/settings.json
+data
+WebServer
+test
+cilent

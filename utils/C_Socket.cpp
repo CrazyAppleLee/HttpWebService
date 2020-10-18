@@ -77,9 +77,9 @@ bool C_Socket::bindSocket()
     //cout << addr.sin_addr.s_addr << endl;
     addr.sin_port = htons(_port);
     
-    int ret = bind(_fd, (struct sockaddr*)&addr, sizeof(addr));
-    if(ret == -1) return false;
-    else return true; 
+    if(bind(_fd, (struct sockaddr*)&addr, sizeof(addr))==-1)
+        return false;
+    return true; 
 }
 
 bool C_Socket::listenSocket()
@@ -88,6 +88,19 @@ bool C_Socket::listenSocket()
     if(ret == -1) return false;
     else return true; 
 }
+bool C_Socket::connectSocket(const string &ip, const int &port)
+{
+    struct sockaddr_in addr;
+    addr.sin_family = _family;
+    addr.sin_addr.s_addr = inet_addr(ip.c_str());
+    addr.sin_port = htons(port);
+    if(connect(_fd, (struct sockaddr*)&addr, sizeof(addr)) == -1)
+    {
+        return false;
+    }
+    return true;
+}
+
 void C_Socket::setSocketNodelay()
 {
     int enable = 1;

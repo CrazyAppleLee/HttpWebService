@@ -21,8 +21,8 @@ namespace WebServer{
             _loop->loop();
         }
         void start(){
-            cout << "loop thread start" << endl;
-            _thread->setRunFun(bind(&LoopThead::run, this));
+            std::cout << "loop thread start" << std::endl;
+            _thread->setRunFun(std::bind(&LoopThead::run, this));
             _thread->start();
         }
         void join(){
